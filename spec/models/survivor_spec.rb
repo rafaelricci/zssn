@@ -125,5 +125,33 @@ RSpec.describe Survivor, type: :model do
         expect(survivor.last_location).to be_nil
       end
     end
+
+    context 'after create' do
+      let(:survivor) { create(:survivor) }
+
+      it 'initializes inventory' do
+        expect(survivor.inventories.count).to eq Inventory.kinds.keys.size
+      end
+
+      it 'sets inventory quantity to 0' do
+        survivor.inventories.each do |inventory|
+          expect(inventory.quantity).to eq 0
+        end
+      end
+    end
+  end
+
+  describe '#inventory_itens' do
+    let(:survivor) { create(:survivor) }
+
+    it 'returns a hash of inventory items with their quantities' do
+      expected_result = {
+        food: 0,
+        water: 0,
+        medicine: 0,
+        ammo: 0
+      }
+      expect(survivor.inventory_itens).to eq expected_result
+    end
   end
 end

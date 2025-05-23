@@ -70,5 +70,21 @@ RSpec.describe Api::V1::SurvivorsController, type: :request do
         expect(json["survivor"]["last_location"]).not_to be_nil
       end
     end
+
+    context "with invalid parameters" do
+      before do
+        patch api_v1_survivor_path(survivor.id),
+              params: { survivor: { lat: nil, lon: nil } }.to_json,
+              headers: headers
+      end
+
+      it "returns 422 with error messages" do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns error messages for invalid parameters" do
+        expect(JSON.parse(response.body)).to include("errors")
+      end
+    end
   end
 end
