@@ -41,6 +41,38 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: infection_reports; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.infection_reports (
+    id bigint NOT NULL,
+    reporter_id bigint NOT NULL,
+    reported_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: infection_reports_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.infection_reports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: infection_reports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.infection_reports_id_seq OWNED BY public.infection_reports.id;
+
+
+--
 -- Name: inventories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -119,6 +151,13 @@ ALTER SEQUENCE public.survivors_id_seq OWNED BY public.survivors.id;
 
 
 --
+-- Name: infection_reports id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.infection_reports ALTER COLUMN id SET DEFAULT nextval('public.infection_reports_id_seq'::regclass);
+
+
+--
 -- Name: inventories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -138,6 +177,14 @@ ALTER TABLE ONLY public.survivors ALTER COLUMN id SET DEFAULT nextval('public.su
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: infection_reports infection_reports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.infection_reports
+    ADD CONSTRAINT infection_reports_pkey PRIMARY KEY (id);
 
 
 --
@@ -162,6 +209,27 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.survivors
     ADD CONSTRAINT survivors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_infection_reports_on_reported_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_infection_reports_on_reported_id ON public.infection_reports USING btree (reported_id);
+
+
+--
+-- Name: index_infection_reports_on_reporter_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_infection_reports_on_reporter_id ON public.infection_reports USING btree (reporter_id);
+
+
+--
+-- Name: index_infection_reports_on_reporter_id_and_reported_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_infection_reports_on_reporter_id_and_reported_id ON public.infection_reports USING btree (reporter_id, reported_id);
 
 
 --
@@ -194,12 +262,29 @@ ALTER TABLE ONLY public.inventories
 
 
 --
+-- Name: infection_reports fk_rails_93a14d202e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.infection_reports
+    ADD CONSTRAINT fk_rails_93a14d202e FOREIGN KEY (reported_id) REFERENCES public.survivors(id);
+
+
+--
+-- Name: infection_reports fk_rails_b7f9e12bc7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.infection_reports
+    ADD CONSTRAINT fk_rails_b7f9e12bc7 FOREIGN KEY (reporter_id) REFERENCES public.survivors(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250523143323'),
 ('20250523041548'),
 ('20250522061131'),
 ('20250522042729');

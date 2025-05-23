@@ -1,5 +1,8 @@
 class Survivor < ApplicationRecord
   has_many :inventories, dependent: :destroy
+  has_many :infection_reports_given, class_name: "InfectionReport", foreign_key: :reporter_id, dependent: :destroy
+  has_many :infection_reports, class_name: "InfectionReport", foreign_key: :reported_id, dependent: :destroy
+
   attribute :last_location, :st_point, srid: 4326, geographic: true
   enum :gender, [ :male, :female, :other ]
 
