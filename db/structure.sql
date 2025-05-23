@@ -41,6 +41,39 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: inventories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.inventories (
+    id bigint NOT NULL,
+    quantity integer NOT NULL,
+    kind integer NOT NULL,
+    survivor_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: inventories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.inventories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inventories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.inventories_id_seq OWNED BY public.inventories.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -86,6 +119,13 @@ ALTER SEQUENCE public.survivors_id_seq OWNED BY public.survivors.id;
 
 
 --
+-- Name: inventories id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inventories ALTER COLUMN id SET DEFAULT nextval('public.inventories_id_seq'::regclass);
+
+
+--
 -- Name: survivors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -98,6 +138,14 @@ ALTER TABLE ONLY public.survivors ALTER COLUMN id SET DEFAULT nextval('public.su
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: inventories inventories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inventories
+    ADD CONSTRAINT inventories_pkey PRIMARY KEY (id);
 
 
 --
@@ -117,10 +165,32 @@ ALTER TABLE ONLY public.survivors
 
 
 --
+-- Name: index_inventories_on_survivor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inventories_on_survivor_id ON public.inventories USING btree (survivor_id);
+
+
+--
+-- Name: index_inventories_on_survivor_id_and_kind; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_inventories_on_survivor_id_and_kind ON public.inventories USING btree (survivor_id, kind);
+
+
+--
 -- Name: index_survivors_on_last_location; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_survivors_on_last_location ON public.survivors USING gist (last_location);
+
+
+--
+-- Name: inventories fk_rails_0492453b06; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inventories
+    ADD CONSTRAINT fk_rails_0492453b06 FOREIGN KEY (survivor_id) REFERENCES public.survivors(id);
 
 
 --
@@ -130,6 +200,7 @@ CREATE INDEX index_survivors_on_last_location ON public.survivors USING gist (la
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250523041548'),
 ('20250522061131'),
 ('20250522042729');
 
