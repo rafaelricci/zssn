@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Inventory, type: :model do
-   describe 'validations' do
+  describe 'validations' do
     context 'when all attributes are valid' do
       it 'is valid' do
         inventory = build(:inventory)
