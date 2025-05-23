@@ -73,6 +73,23 @@ RSpec.describe Survivor, type: :model do
         expect(survivor.errors[:lon]).to include("can't be blank")
       end
     end
+
+    context 'when updating an infected survivor' do
+      let(:survivor) { create(:survivor) }
+      before do
+        create_list(:infection_report, 3, reported: survivor)
+      end
+      
+      it 'is invalid' do
+        survivor.update(name: 'New Name')
+        expect(survivor).to be_invalid
+      end
+      
+      it 'adds error on base' do
+        survivor.update(name: 'New Name')
+        expect(survivor.errors[:base]).to include("Infected survivor cannot be modified.")
+      end
+    end
   end
 
   describe 'enums' do
@@ -152,6 +169,30 @@ RSpec.describe Survivor, type: :model do
         ammo: 0
       }
       expect(survivor.inventory_itens).to eq expected_result
+    end
+  end
+
+  describe '#infected?' do
+    let(:survivor) { create(:survivor) }
+
+    context 'when survivor has 3 or more infection reports' do
+      before do
+        create_list(:infection_report, 3, reported: survivor)
+      end
+
+      it 'returns true' do
+        expect(survivor.infected?).to be true
+      end
+    end
+
+    context 'when survivor has less than 3 infection reports' do
+      before do
+        create_list(:infection_report, 2, reported: survivor)
+      end
+
+      it 'returns false' do
+        expect(survivor.infected?).to be false
+      end
     end
   end
 end

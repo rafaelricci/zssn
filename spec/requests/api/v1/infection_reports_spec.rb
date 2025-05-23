@@ -30,7 +30,7 @@ RSpec.describe Api::V1::InfectionReportsController, type: :request do
             "reporter_id" => reporter.id,
             "reported" => {
               "id" => reported.id,
-              "reports_from_reported_count" => 1,
+              "reports_from_reported_count" => 1
             }
           }
         )

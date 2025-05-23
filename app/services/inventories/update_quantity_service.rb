@@ -36,6 +36,7 @@ class Inventories::UpdateQuantityService
   end
 
   def raise_if_removal_invalid!
+    raise "Survivor is infected" if survivor.infected?
     raise "Cannot remove more than available" if inventory.quantity < @quantity
   end
 

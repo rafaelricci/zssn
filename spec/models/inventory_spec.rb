@@ -47,6 +47,31 @@ RSpec.describe Inventory, type: :model do
         expect(inventory.errors[:survivor]).to include("must exist")
       end
     end
+
+    context 'when survivor is infected' do
+      let(:survivor) { create(:survivor) }
+      let(:inventory) { survivor.inventories.first }
+
+      before do
+        create_list(:infection_report, 3, reported: survivor)
+      end
+
+      it 'is invalid' do
+        inventory.quantity = 10
+        expect(inventory).to be_invalid
+      end
+
+      it 'blocks inventory update' do
+        inventory.quantity = 10
+        expect { inventory.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'shows error on inventory update' do
+        inventory.quantity = 10
+        inventory.save
+        expect(inventory.errors[:base]).to include("Survivor is infected and cannot modify inventory.")
+      end
+    end
   end
 
   describe 'enums' do

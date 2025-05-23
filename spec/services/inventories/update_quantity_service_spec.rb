@@ -78,5 +78,22 @@ RSpec.describe Inventories::UpdateQuantityService do
         }.to raise_error(RuntimeError, 'Inventory item not found: invalid_kind')
       end
     end
+
+    context 'when survivor is infected' do
+      before do
+        create_list(:infection_report, 3, reported: survivor)
+      end
+
+      it 'raises an error' do
+        expect {
+          described_class.call(
+            survivor_id: survivor.id,
+            kind: kind,
+            operation: 'remove',
+            quantity: 2
+          )
+        }.to raise_error(RuntimeError, 'Survivor is infected')
+      end
+    end
   end
 end

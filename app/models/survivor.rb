@@ -7,6 +7,7 @@ class Survivor < ApplicationRecord
   enum :gender, [ :male, :female, :other ]
 
   validates :name, :age, :gender, :lat, :lon, presence: true
+  validate :cannot_be_modified_if_infected, on: :update
 
   before_validation :set_last_location
   after_create :initialize_inventory
@@ -17,12 +18,22 @@ class Survivor < ApplicationRecord
     end
   end
 
+  def infected?
+    infection_reports.distinct.count >= 3
+  end
+
   private
 
-  def initialize_inventory
-    Inventory.kinds.keys.each do |kind|
-      inventories.create!(kind: kind, quantity: 0)
+  def cannot_be_modified_if_infected
+    if infected?
+      errors.add(:base, "Infected survivor cannot be modified.")
     end
+  end
+
+  def initialize_inventory
+    inventories.create!(
+      Inventory.kinds.keys.map { |kind| { kind: kind, quantity: 0 } }
+    )
   end
 
   def set_last_location

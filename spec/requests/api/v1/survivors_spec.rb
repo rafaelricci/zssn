@@ -86,5 +86,22 @@ RSpec.describe Api::V1::SurvivorsController, type: :request do
         expect(JSON.parse(response.body)).to include("errors")
       end
     end
+
+    context "when the survivor is infected" do
+      before do
+        create_list(:infection_report, 3, reported: survivor)
+        patch api_v1_survivor_path(survivor.id),
+              params: { survivor: { lat: lat, lon: lon } }.to_json,
+              headers: headers
+      end
+
+      it "returns 422 Forbidden" do
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "returns an error message" do
+        expect(JSON.parse(response.body)).to include("errors")
+      end
+    end
   end
 end
