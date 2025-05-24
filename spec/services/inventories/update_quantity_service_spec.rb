@@ -7,92 +7,139 @@ RSpec.describe Inventories::UpdateQuantityService do
   end
 
   describe '.call' do
-    it 'adds quantity to existing inventory' do
-      result = described_class.call(
-        survivor_id: survivor.id,
-        kind: kind,
-        operation: 'add',
-        quantity: 3
-      )
-      expect(result.quantity).to eq(8)
+    context 'when operation is add' do
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: kind,
+          operation: 'add',
+          quantity: 3
+        )
+      end
+
+      it 'returns success result' do
+        expect(result.success?).to be true
+      end
+
+      it 'adds quantity to existing inventory' do
+        expect(result.data.quantity).to eq(8)
+      end
     end
 
-    it 'removes quantity from existing inventory' do
-      result = described_class.call(
-        survivor_id: survivor.id,
-        kind: kind,
-        operation: 'remove',
-        quantity: 2
-      )
-      expect(result.quantity).to eq(3)
+    context 'when operation is remove' do
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: kind,
+          operation: 'remove',
+          quantity: 2
+        )
+      end
+
+      it 'returns success result' do
+        expect(result.success?).to be true
+      end
+
+      it 'removes quantity from existing inventory' do
+        expect(result.data.quantity).to eq(3)
+      end
     end
 
     context 'when removing more than available' do
-      it 'raises an error' do
-        expect {
-          described_class.call(
-            survivor_id: survivor.id,
-            kind: kind,
-            operation: 'remove',
-            quantity: 10
-          )
-        }.to raise_error(RuntimeError, 'Cannot remove more than available')
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: kind,
+          operation: 'remove',
+          quantity: 10
+        )
+      end
+      it 'returns failure result' do
+        expect(result.failure?).to be true
+      end
+
+      it 'returns failure message' do
+        expect(result.error).to eq('Cannot remove more than available')
       end
     end
 
     context 'when invalid operation is provided' do
-      it 'raises an error' do
-        expect {
-          described_class.call(
-            survivor_id: survivor.id,
-            kind: kind,
-            operation: 'invalid_operation',
-            quantity: 2
-          )
-        }.to raise_error(RuntimeError, 'Invalid operation: invalid_operation')
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: kind,
+          operation: 'invalid_operation',
+          quantity: 2
+        )
+      end
+
+      it 'returns failure result' do
+        expect(result.failure?).to be true
+      end
+
+      it 'returns failure result with message' do
+        expect(result.error).to eq('Invalid operation')
       end
     end
 
     context 'when survivor not found' do
-      it 'raises an error for survivor not found' do
-        expect {
-          described_class.call(
-            survivor_id: -1,
-            kind: kind,
-            operation: 'add',
-            quantity: 2
-          )
-        }.to raise_error(RuntimeError, 'Survivor not found: -1')
+      let(:result) do
+        described_class.call(
+          survivor_id: -1,
+          kind: kind,
+          operation: 'add',
+          quantity: 2
+        )
+      end
+
+      it 'returns failure result' do
+        expect(result.failure?).to be true
+      end
+
+      it 'returns failure result with message' do
+        expect(result.error).to eq('Survivor not found: -1')
       end
     end
 
     context 'when inventory item not found' do
-      it 'raises an error for inventory item not found' do
-        expect {
-          described_class.call(
-            survivor_id: survivor.id,
-            kind: :invalid_kind,
-            operation: 'add',
-            quantity: 2
-          )
-        }.to raise_error(RuntimeError, 'Inventory item not found: invalid_kind')
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: :invalid_kind,
+          operation: 'add',
+          quantity: 2
+        )
+      end
+
+      it 'returns failure result' do
+        expect(result.failure?).to be true
+      end
+
+      it 'returns failure result with message' do
+        expect(result.error).to eq('Inventory item not found: invalid_kind')
       end
     end
 
     context 'when survivor is infected' do
+      let(:result) do
+        described_class.call(
+          survivor_id: survivor.id,
+          kind: kind,
+          operation: 'remove',
+          quantity: 2
+        )
+      end
+
       before do
         create_list(:infection_report, 3, reported: survivor)
       end
 
-      it 'raises an error' do
-        expect {
-          described_class.call(
-            survivor_id: survivor.id,
-            kind: kind,
-            operation: 'remove',
-            quantity: 2
-          )
-        }.to raise_error(RuntimeError, 'Survivor is infected')
+      it 'returns failure result' do
+        expect(result.failure?).to be true
+      end
+
+      it 'returns failure result with message' do
+        expect(result.error).to eq('Survivor is infected')
       end
     end
   end

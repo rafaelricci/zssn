@@ -1,11 +1,14 @@
 class Api::V1::InventoriesController < ApplicationController
   def update
-    inventory = ::Inventories::UpdateQuantityService.call(**update_params)
-    @survivor = inventory.survivor
+    result = ::Inventories::UpdateQuantityService.call(**update_params)
 
-    render :update, status: :ok
-  rescue => e
-      render json: { error: e.message }, status: :unprocessable_entity
+    if result.success?
+      @survivor = result.data.survivor
+
+      render :update, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   private

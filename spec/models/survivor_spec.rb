@@ -79,12 +79,12 @@ RSpec.describe Survivor, type: :model do
       before do
         create_list(:infection_report, 3, reported: survivor)
       end
-      
+
       it 'is invalid' do
         survivor.update(name: 'New Name')
         expect(survivor).to be_invalid
       end
-      
+
       it 'adds error on base' do
         survivor.update(name: 'New Name')
         expect(survivor.errors[:base]).to include("Infected survivor cannot be modified.")

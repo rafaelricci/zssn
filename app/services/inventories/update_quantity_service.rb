@@ -1,13 +1,10 @@
-class Inventories::UpdateQuantityService
-  def self.call(survivor_id:, kind:, operation:, quantity:)
-    new(survivor_id: survivor_id, kind: kind, operation: operation, quantity: quantity).call
-  end
-
+class Inventories::UpdateQuantityService < ApplicationService
   def call
-    raise "Invalid operation: #{@operation}" unless operations.key?(@operation)
-
+    raise "Invalid operation" unless operations.key?(@operation)
     operations[@operation].call
-    inventory
+    success(inventory)
+  rescue => e
+    failure(e.message)
   end
 
   private

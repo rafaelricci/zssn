@@ -24,7 +24,7 @@ RSpec.describe Trade::PerformService, type: :service do
             from.inventories.find_by(kind: :medicine).quantity,
             to.inventories.find_by(kind: :water).quantity
           ]
-        }.from([0, 0]).to([4, 2])
+        }.from([ 0, 0 ]).to([ 4, 2 ])
       end
     end
 
