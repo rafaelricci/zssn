@@ -8,7 +8,7 @@ RSpec.describe Api::V1::ReportsController, type: :request do
       before do
         infected = create(:survivor)
         create_list(:infection_report, 3, reported: infected)
-        
+
         get api_v1_reports_infected_percentage_path, headers: headers
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Api::V1::ReportsController, type: :request do
       before do
         infected = create(:survivor)
         create_list(:infection_report, 3, reported: infected)
-        
+
         get api_v1_reports_non_infected_percentage_path, headers: headers
       end
 

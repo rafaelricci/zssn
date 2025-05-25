@@ -9,8 +9,8 @@ RSpec.describe Api::V1::InventoriesController, type: :request do
     context "when inventory does not exist yet" do
       before do
         patch api_v1_survivor_inventory_path(survivor.id),
-              params: { 
-                inventory:{
+              params: {
+                inventory: {
                   kind: inventory_kind,
                   operation: "add",
                   quantity: 10
@@ -33,7 +33,7 @@ RSpec.describe Api::V1::InventoriesController, type: :request do
       before do
         patch api_v1_survivor_inventory_path(survivor.id),
               params: {
-                inventory:{
+                inventory: {
                   kind: inventory_kind,
                   operation: "add",
                   quantity: 5
@@ -46,7 +46,7 @@ RSpec.describe Api::V1::InventoriesController, type: :request do
         before do
           patch api_v1_survivor_inventory_path(survivor.id),
                 params: {
-                  inventory:{
+                  inventory: {
                     kind: inventory_kind,
                     operation: "remove",
                     quantity: 10
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::InventoriesController, type: :request do
         before do
           patch api_v1_survivor_inventory_path(survivor.id),
                 params: {
-                  inventory:{
+                  inventory: {
                     kind: inventory_kind,
                     operation: "remove",
                     quantity: 3

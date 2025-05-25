@@ -1,7 +1,7 @@
 class Survivors::TradeService < ApplicationService
   def call
     validate_trade!
-    
+
     ActiveRecord::Base.transaction do
       execute_offerer_trade!
       execute_receiver_trade!
@@ -20,13 +20,13 @@ class Survivors::TradeService < ApplicationService
     @offer_items = offer_items.transform_keys(&:to_s)
     @request_items = request_items.transform_keys(&:to_s)
   end
-  
+
   def points
     {
-      'water' => 4,
-      'food' => 3,
-      'medicine' => 2,
-      'ammo' => 1
+      "water" => 4,
+      "food" => 3,
+      "medicine" => 2,
+      "ammo" => 1
     }
   end
 

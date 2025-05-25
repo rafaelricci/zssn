@@ -38,7 +38,7 @@ RSpec.describe Reports::NonInfectedPercentageService do
         expect(result).to be_failure
       end
 
-      it "returns the error message" do        
+      it "returns the error message" do
         expect(result.error).to eq("unexpected failure")
       end
     end

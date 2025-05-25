@@ -7,7 +7,7 @@ class Reports::InfectedPercentageService < ApplicationService
     failure(e.message)
   end
 
-  private 
+  private
 
   def total_survivors
     @total_survivors ||= Survivor.count

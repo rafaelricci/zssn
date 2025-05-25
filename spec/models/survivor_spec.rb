@@ -104,7 +104,7 @@ RSpec.describe Survivor, type: :model do
 
     it 'sets all inventory quantities to 0' do
       quantities = survivor.inventories.map(&:quantity).uniq
-      expect(quantities).to eq([0])
+      expect(quantities).to eq([ 0 ])
     end
   end
 end

@@ -34,7 +34,7 @@ RSpec.describe Inventory, type: :model do
 
     it 'is invalid when trying to update inventory' do
       inventory.quantity = 10
-      
+
       expect(inventory).to be_invalid
     end
 
