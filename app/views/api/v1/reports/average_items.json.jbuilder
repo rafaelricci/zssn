@@ -1,0 +1,1 @@
+json.averages @data[:averages]
