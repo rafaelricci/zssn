@@ -12,6 +12,12 @@ class Survivor < ApplicationRecord
   before_update :cannot_be_modified_if_infected, :cannot_be_infected_if_non_have_infection_reports
   after_create :initialize_inventory
 
+  def inventory_items
+    Inventory.kinds.keys.index_with do |kind|
+      inventories.find { |inv| inv.kind == kind }.quantity
+    end
+  end
+
   private
 
   def initialize_inventory

@@ -7,6 +7,10 @@ class InfectionReport < ApplicationRecord
 
   after_create :mark_reported_as_infected
 
+  def reports_received_count
+    reported.infection_reports_received.distinct.count
+  end
+
   private
 
   def cannot_report_self
