@@ -74,3 +74,33 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
         run: bundle exec rspec
+
+  rubycritic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Run RubyCritic and fail if score is too low
+        run: |
+          bundle exec rubycritic --format json --no-browser
+
+          SCORE=$(jq '.score' tmp/rubycritic/report.json)
+          echo "RubyCritic score: $SCORE"
+
+          THRESHOLD=95
+
+          if (( $(echo "$SCORE < $THRESHOLD" | bc -l) )); then
+            echo "❌ RubyCritic score is below threshold of $THRESHOLD"
+            exit 1
+          else
+            echo "✅ RubyCritic score meets the threshold"
+          fi
+

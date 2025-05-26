@@ -3,10 +3,12 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      get "reports/infected_percentage", to: "reports#infected_percentage"
-      get "reports/non_infected_percentage", to: "reports#non_infected_percentage"
-      get "reports/average_items", to: "reports#average_items"
-      get "reports/lost_points", to: "reports#lost_points"
+      namespace :reports do
+        resources :infected_percentage, only: [ :index ]
+        resources :non_infected_percentage, only: [ :index ]
+        resources :average_items, only: [ :index ]
+        resources :lost_points, only: [ :index ]
+      end
       post "trade", to: "trades#create"
       resources :infection_reports, only: [ :create ]
       resources :survivors, only: [ :create, :update ] do

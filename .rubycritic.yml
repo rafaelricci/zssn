@@ -1,0 +1,33 @@
+# .rubycritic.yml
+paths:
+  - app
+
+exclude_paths:
+  - spec
+  - test
+  - db
+  - config
+  - lib/tasks
+  - lib/generators
+  - app/channels
+  - app/jobs
+  - app/mailers
+  - app/helpers
+  - app/assets
+  - vendor
+  - node_modules
+  - bin
+  - tmp
+  - log
+
+mode: :analytical
+mode: :analytical
+minimum_score: 95
+
+formats:
+  - json
+  - html
+
+no_browser: true
+suppress_ratings: true
+deduplicate_symlinks: true

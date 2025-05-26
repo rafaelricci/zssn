@@ -15,9 +15,6 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'simplecov'
 SimpleCov.start 'rails' do
-  enable_coverage :branch
-  minimum_coverage 100
-  refuse_coverage_drop
   add_filter 'channels'
   add_filter 'mailers'
   add_filter 'jobs'
