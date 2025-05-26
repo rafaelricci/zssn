@@ -13,12 +13,14 @@ class Survivor < ApplicationRecord
   after_create :initialize_inventory
 
   def inventory_items
-    Inventory.kinds.keys.index_with do |kind|
-      inventories.find { |inv| inv.kind == kind }.quantity
-    end
+    Inventory.kinds.keys.index_with { |kind| inventory_quantity_for(kind) }
   end
 
   private
+
+  def inventory_quantity_for(kind)
+    inventories.find { |inv| inv.kind == kind }&.quantity || 0
+  end
 
   def initialize_inventory
     inventories.create!(

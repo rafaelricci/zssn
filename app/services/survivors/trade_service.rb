@@ -1,15 +1,10 @@
 class Survivors::TradeService < ApplicationService
   def call
-    validate_trade!
-
-    ActiveRecord::Base.transaction do
-      execute_offerer_trade!
-      execute_receiver_trade!
-    end
-
+    validate_trade
+    perform_trade
     success("Trade completed successfully")
-  rescue => e
-    failure(e.message)
+  rescue => exception
+    failure(exception.message)
   end
 
   private
@@ -21,6 +16,13 @@ class Survivors::TradeService < ApplicationService
     @request_items = request_items.transform_keys(&:to_s)
   end
 
+  def perform_trade
+    ActiveRecord::Base.transaction do
+      execute_offerer_trade
+      execute_receiver_trade
+    end
+  end
+
   def points
     {
       "water" => 4,
@@ -30,7 +32,7 @@ class Survivors::TradeService < ApplicationService
     }
   end
 
-  def validate_trade!
+  def validate_trade
     raise "Cannot trade with yourself" if @offerer.id == @receiver.id
     raise "One or both survivors are infected" if @offerer.infected? || @receiver.infected?
     raise "Unfair trade. Point values must match" unless fair_trade?
@@ -40,12 +42,12 @@ class Survivors::TradeService < ApplicationService
     total_points(@offer_items) == total_points(@request_items)
   end
 
-  def execute_offerer_trade!
+  def execute_offerer_trade
     process_items(@offerer, @offer_items, :remove)
     process_items(@offerer, @request_items, :add)
   end
 
-  def execute_receiver_trade!
+  def execute_receiver_trade
     process_items(@receiver, @request_items, :remove)
     process_items(@receiver, @offer_items, :add)
   end

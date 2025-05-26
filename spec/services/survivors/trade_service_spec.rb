@@ -11,7 +11,7 @@ RSpec.describe Survivors::TradeService, type: :service do
     end
 
     let(:offer_items) { { water: 1, food: 1 } }
-    let(:request_items) { { medicine: 1, ammo: 1, ammo: 1 } }
+    let(:request_items) { { medicine: 1, ammo: 2 } }
 
     context 'when trade is valid' do
       let(:request_items) { { medicine: 1, ammo: 1 } }
